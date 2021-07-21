@@ -31,9 +31,10 @@ namespace Beautryee
         private int SnakeLenth = 3;         // 蛇身长度
         private int Score = 0;              // 分数
         private int Level = 1;              // 等级
-        private bool IsGameOver = false;    // 游戏是否结束
+        private bool IsGameOver = true;     // 游戏是否结束
         private bool IsRelease = false;     // 上一个按键是否已经执行
         private bool IsApplePlus = false;   // 苹果超大杯
+        private bool IsPause = false;        // 是否暂停游戏
         private readonly Color MapColor = SystemColors.Info;    // 地图颜色
         private readonly Color SnakeColor = Color.SaddleBrown;  // 蛇颜色
         private readonly Color ObstacleColor = Color.Black;     // 障碍物颜色
@@ -50,7 +51,7 @@ namespace Beautryee
             14,9,15,5,15,7,15,9,15,11,15,12,15,13,15,14,15,15,16,5,16,7,16,9,16,
             11,16,13,16,14,17,11,17,12,17,13,17,15,19,11,19,12,19,13,19,15
         };
-        private readonly int[] ObstaclePoint = new int[] {
+        private int[] ObstaclePoint = new int[] {
             2,2,3,3,4,4,5,5,14,5,15,4,16,3,17,2,8,8,9,9,10,10,11,
             11,14,14,15,15,16,16,17,17,2,17,3,16,4,15,5,14,8,11,9,10,10,9,11,8
         };
@@ -70,11 +71,11 @@ namespace Beautryee
         // 开始游戏
         private void Button_Start_Click(object sender, EventArgs e)
         {
-            NewGame();
+            GameStart();
             Button_Start.Enabled = false;
         }
         // 新游戏
-        private void NewGame()
+        private void GameStart()
         {
             for (int x = 0; x < Col; x++)
                 for (int y = 0; y < Row; y++)
@@ -82,16 +83,32 @@ namespace Beautryee
 
             IsGameOver = false;
             Score = 0;
+            CheckBox2_Edit.Enabled = false;
             
             SnakeLenth = 3;
             direction = Direction.RIGHT;
 
-            Label_Score.Text = $"Score {Score}";
+            Label_Score.Text = $"{Score}";
             if (checkBox1.Checked)
                 GenerateObstacle();
             GenerateSnake();
             GenerateApple();
             new Thread(new ThreadStart(Running)).Start();
+        }
+        // 游戏暂停
+        private void GamePause()
+        {
+            if (IsGameOver)
+                return;
+            IsPause = !IsPause;
+            Label_Pause.Visible = IsPause;
+        }
+        // 游戏结束
+        private void GameOver()
+        {
+            Button_Start.Enabled = true;
+            CheckBox2_Edit.Enabled = true;
+            Print(GameOverPoint, GameOverColor);
         }
         // 注册快捷键
         private void RegisterHotKey()
@@ -104,6 +121,7 @@ namespace Beautryee
                 RegisterHotKey(Handle, (int)Direction.LEFT, 0, Keys.Left);
                 RegisterHotKey(Handle, 101, 0, Keys.PageUp);
                 RegisterHotKey(Handle, 102, 0, Keys.PageDown);
+                RegisterHotKey(Handle, 103, 0, Keys.Space);
             }
             catch (Exception ex)
             {
@@ -129,13 +147,30 @@ namespace Beautryee
                         Size = new Size(ItemSize, ItemSize),
                         Location = new Point(x * ItemSize, y * ItemSize),
                         BackColor = MapColor,
-                        Enabled = false,
                     };
+                    item.Click += Item_Click;
                     MapItems[x,y] = item;
                     Controls.Add(item);
                 }
             }
         }
+
+        private void Item_Click(object sender, EventArgs e)
+        {
+            if (CheckBox2_Edit.Checked)
+            {
+                Panel panel = (Panel)sender;
+                string name = panel.Name.Replace("Box", "");
+                int x = int.Parse(name.Split('_')[0]);
+                int y = int.Parse(name.Split('_')[1]);
+
+                if (MapItems[x, y].BackColor == ObstacleColor)
+                    MapItems[x, y].BackColor = MapColor;
+                else
+                    MapItems[x, y].BackColor = ObstacleColor;
+            }
+        }
+
         // 生成蛇
         private void GenerateSnake()
         {
@@ -182,6 +217,8 @@ namespace Beautryee
             while (!IsGameOver)
             {
                 Thread.Sleep((int)Interval);
+                if (IsPause)
+                    continue;
                 IsRelease = true;
                 try
                 {
@@ -222,7 +259,7 @@ namespace Beautryee
                             Score += 1;
                         SnakeLenth++;
                         GenerateApple();
-                        Label_Score.Text = $"Score {Score}";
+                        Label_Score.Text = $"{Score}";
                         goto StartPosition;
                     }
                     else
@@ -240,12 +277,7 @@ namespace Beautryee
             }
             GameOver();
         }
-        // 游戏结束
-        private void GameOver()
-        {
-            Button_Start.Enabled = true;
-            Print(GameOverPoint, GameOverColor);
-        }
+        
         // 打印点阵颜色
         private void Print(int[] Points, Color color)
         {
@@ -311,6 +343,7 @@ namespace Beautryee
                 case (int)Direction.LEFT:   HotKey_Left();  break;
                 case 101:   SpeedUp();      break;
                 case 102:   SpeedDown();    break;
+                case 103:   GamePause();    break;
             }
         }
         //监视Windows消息
@@ -355,6 +388,42 @@ namespace Beautryee
 
             Label_Level.Text = Level.ToString();
             Interval = 200 * Math.Pow(0.9, (double)Level - 1);
+        }
+        
+        // 进入编辑模式
+        private void CheckBox2_Edit_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CheckBox2_Edit.Checked)
+            {
+                Button_Start.Enabled = false;
+                Button_Save.Visible = true;
+            }    
+            else
+            {
+                Button_Start.Enabled = true;
+                Button_Save.Visible = false;
+            }
+        }
+        // 保存障碍物
+        private void Button_Save_Click(object sender, EventArgs e)
+        {
+            CheckBox2_Edit.Checked = false;
+            Button_Save.Visible = false;
+            checkBox1.Checked = true;
+            List<int> items = new List<int> { };
+            foreach (var item in MapItems)
+            {
+                if (item.BackColor == ObstacleColor)
+                {
+                    string name = item.Name.Replace("Box", "");
+                    int x = int.Parse(name.Split('_')[0]);
+                    int y = int.Parse(name.Split('_')[1]);
+                    items.Add(x);
+                    items.Add(y);
+                }
+            }
+            ObstaclePoint = items.ToArray();
+            MessageBox.Show("保存成功");
         }
     }
 }

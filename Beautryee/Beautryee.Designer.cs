@@ -47,6 +47,9 @@ namespace Beautryee
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.CheckBox2_Edit = new System.Windows.Forms.CheckBox();
+            this.Button_Save = new System.Windows.Forms.Button();
+            this.Label_Pause = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Label_Score
@@ -64,7 +67,7 @@ namespace Beautryee
             // 
             // Button_Start
             // 
-            this.Button_Start.Location = new System.Drawing.Point(451, 338);
+            this.Button_Start.Location = new System.Drawing.Point(451, 343);
             this.Button_Start.Name = "Button_Start";
             this.Button_Start.Size = new System.Drawing.Size(75, 23);
             this.Button_Start.TabIndex = 1;
@@ -135,7 +138,7 @@ namespace Beautryee
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(71, 12);
             this.label2.TabIndex = 6;
-            this.label2.Text = "Version 1.0";
+            this.label2.Text = "Version 1.1";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // panel1
@@ -250,12 +253,51 @@ namespace Beautryee
             this.checkBox1.Text = "加入障碍物";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
+            // CheckBox2_Edit
+            // 
+            this.CheckBox2_Edit.AutoSize = true;
+            this.CheckBox2_Edit.Location = new System.Drawing.Point(415, 282);
+            this.CheckBox2_Edit.Name = "CheckBox2_Edit";
+            this.CheckBox2_Edit.Size = new System.Drawing.Size(84, 16);
+            this.CheckBox2_Edit.TabIndex = 17;
+            this.CheckBox2_Edit.Text = "编辑障碍物";
+            this.CheckBox2_Edit.UseVisualStyleBackColor = true;
+            this.CheckBox2_Edit.CheckedChanged += new System.EventHandler(this.CheckBox2_Edit_CheckedChanged);
+            // 
+            // Button_Save
+            // 
+            this.Button_Save.Location = new System.Drawing.Point(504, 279);
+            this.Button_Save.Name = "Button_Save";
+            this.Button_Save.Size = new System.Drawing.Size(47, 23);
+            this.Button_Save.TabIndex = 18;
+            this.Button_Save.Text = "保存";
+            this.Button_Save.UseVisualStyleBackColor = true;
+            this.Button_Save.Visible = false;
+            this.Button_Save.Click += new System.EventHandler(this.Button_Save_Click);
+            // 
+            // Label_Pause
+            // 
+            this.Label_Pause.AutoSize = true;
+            this.Label_Pause.BackColor = System.Drawing.Color.Transparent;
+            this.Label_Pause.Font = new System.Drawing.Font("宋体", 12F);
+            this.Label_Pause.ForeColor = System.Drawing.Color.Red;
+            this.Label_Pause.Location = new System.Drawing.Point(452, 319);
+            this.Label_Pause.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Label_Pause.Name = "Label_Pause";
+            this.Label_Pause.Size = new System.Drawing.Size(72, 16);
+            this.Label_Pause.TabIndex = 19;
+            this.Label_Pause.Text = "游戏暂停";
+            this.Label_Pause.Visible = false;
+            // 
             // Beautryee
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Menu;
             this.ClientSize = new System.Drawing.Size(564, 400);
+            this.Controls.Add(this.Label_Pause);
+            this.Controls.Add(this.Button_Save);
+            this.Controls.Add(this.CheckBox2_Edit);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
@@ -306,6 +348,9 @@ namespace Beautryee
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox CheckBox2_Edit;
+        private System.Windows.Forms.Button Button_Save;
+        private System.Windows.Forms.Label Label_Pause;
     }
 }
 
