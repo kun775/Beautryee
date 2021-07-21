@@ -31,12 +31,29 @@ namespace Beautryee
         private int SnakeLenth = 3;         // 蛇身长度
         private int Score = 0;              // 分数
         private int Level = 1;              // 等级
-        private bool GameOver = false;      // 游戏是否结束
+        private bool IsGameOver = false;    // 游戏是否结束
         private bool IsRelease = false;     // 上一个按键是否已经执行
+        private bool IsApplePlus = false;   // 苹果超大杯
         private readonly Color MapColor = SystemColors.Info;    // 地图颜色
         private readonly Color SnakeColor = Color.SaddleBrown;  // 蛇颜色
+        private readonly Color ObstacleColor = Color.Black;     // 障碍物颜色
+        private readonly Color GameOverColor = Color.DimGray;   // 游戏结束颜色
         private Direction direction = Direction.RIGHT;          // 移动方向
         private readonly Queue<Point> SnakeBody = new Queue<Point> { }; // 蛇身集合
+        private readonly int [] GameOverPoint = new int[]     // 游戏结束
+        {
+            0,5,0,6,0,7,0,8,0,9,1,5,1,9,2,5,2,7,2,8,2,9,3,11,3,12,3,13,3,14,3,
+            15,4,6,4,7,4,8,4,9,4,11,4,15,5,5,5,8,5,11,5,12,5,13,5,14,5,15,6,6,
+            6,7,6,8,6,9,7,11,7,12,7,13,7,14,8,5,8,6,8,7,8,8,8,9,8,15,9,6,9,11,
+            9,12,9,13,9,14,10,7,11,6,11,11,11,12,11,13,11,14,11,15,12,5,12,6,12,
+            7,12,8,12,9,12,11,12,13,12,15,13,11,13,13,13,15,14,5,14,6,14,7,14,8,
+            14,9,15,5,15,7,15,9,15,11,15,12,15,13,15,14,15,15,16,5,16,7,16,9,16,
+            11,16,13,16,14,17,11,17,12,17,13,17,15,19,11,19,12,19,13,19,15
+        };
+        private readonly int[] ObstaclePoint = new int[] {
+            2,2,3,3,4,4,5,5,14,5,15,4,16,3,17,2,8,8,9,9,10,10,11,
+            11,14,14,15,15,16,16,17,17,2,17,3,16,4,15,5,14,8,11,9,10,10,9,11,8
+        };
 
         public Beautryee()
         {
@@ -59,19 +76,19 @@ namespace Beautryee
         // 新游戏
         private void NewGame()
         {
-            foreach (var item in SnakeBody)
-                MapItems[item.X, item.Y].BackColor = MapColor;
-            MapItems[Apple.X, Apple.Y].BackColor = MapColor;
+            for (int x = 0; x < Col; x++)
+                for (int y = 0; y < Row; y++)
+                    MapItems[x, y].BackColor = MapColor;
 
-            GameOver = false;
+            IsGameOver = false;
             Score = 0;
-            Level = int.Parse(Label_Level.Text);
-            Interval *= Math.Pow(0.9, (double)Level - 1);
+            
             SnakeLenth = 3;
             direction = Direction.RIGHT;
 
-            Label_Score.Text = $"Score: {Score}";
-
+            Label_Score.Text = $"Score {Score}";
+            if (checkBox1.Checked)
+                GenerateObstacle();
             GenerateSnake();
             GenerateApple();
             new Thread(new ThreadStart(Running)).Start();
@@ -85,11 +102,18 @@ namespace Beautryee
                 RegisterHotKey(Handle, (int)Direction.RIGHT, 0, Keys.Right);
                 RegisterHotKey(Handle, (int)Direction.DOWN, 0, Keys.Down);
                 RegisterHotKey(Handle, (int)Direction.LEFT, 0, Keys.Left);
+                RegisterHotKey(Handle, 101, 0, Keys.PageUp);
+                RegisterHotKey(Handle, 102, 0, Keys.PageDown);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("注册快捷键失败\n" + ex.Message);
             }
+        }
+        // 生成障碍物
+        private void GenerateObstacle()
+        {
+            Print(ObstaclePoint, ObstacleColor);
         }
         // 生成地图
         private void GenerateMap()
@@ -131,10 +155,23 @@ namespace Beautryee
             {
                 int x = ran.Next(0, Col);
                 int y = ran.Next(0, Row);
+                if (MapItems[x, y].BackColor == ObstacleColor)
+                    continue;
+
                 Apple = new Point(x, y);
+                
                 if (!SnakeBody.Contains(Apple))
                 {
-                    MapItems[x, y].BackColor = Color.Red;
+                    if (ran.Next(0, 10) == 1)
+                    {
+                        MapItems[x, y].BackColor = Color.Red;
+                        IsApplePlus = true;
+                    }
+                    else
+                    {
+                        MapItems[x, y].BackColor = Color.Green;
+                        IsApplePlus = false;
+                    }
                     break;
                 }
             }
@@ -142,7 +179,7 @@ namespace Beautryee
         // 移动
         private void Running()
         {
-            while (!GameOver)
+            while (!IsGameOver)
             {
                 Thread.Sleep((int)Interval);
                 IsRelease = true;
@@ -167,16 +204,25 @@ namespace Beautryee
                     }
                     if (SnakeBody.Contains(SnakeHeader))
                     {
-                        GameOver = true;
+                        IsGameOver = true;
+                        break;
+                    }
+                    if (MapItems[SnakeHeader.X, SnakeHeader.Y].BackColor == ObstacleColor)
+                    {
+                        IsGameOver = true;
+                        break;
                     }
                     MapItems[SnakeHeader.X, SnakeHeader.Y].BackColor = SnakeColor;
                     if (SnakeHeader == Apple)
                     {
                         SnakeBody.Enqueue(SnakeHeader);
-                        Score++;
+                        if (IsApplePlus)
+                            Score += 10;
+                        else
+                            Score += 1;
                         SnakeLenth++;
                         GenerateApple();
-                        Label_Score.Text = $"Score: {Score}";
+                        Label_Score.Text = $"Score {Score}";
                         goto StartPosition;
                     }
                     else
@@ -188,11 +234,38 @@ namespace Beautryee
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    GameOver = true;
+                    IsGameOver = true;
+                    break;
                 }
             }
-            MessageBox.Show($"游戏结束，分数:{Score}", "游戏结束");
+            GameOver();
+        }
+        // 游戏结束
+        private void GameOver()
+        {
             Button_Start.Enabled = true;
+            Print(GameOverPoint, GameOverColor);
+        }
+        // 打印点阵颜色
+        private void Print(int[] Points, Color color)
+        {
+            int flag = 0, x = 0;
+            try
+            {
+                foreach (var item in Points)
+                {
+                    if (flag % 2 == 0)
+                        x = item;
+                    else
+                    {
+                        int y = item;
+                        MapItems[x, y].BackColor = color;
+                    }
+                    flag++;
+                }
+            }
+            catch
+            { }
         }
         // 上
         private void HotKey_Up()
@@ -232,10 +305,12 @@ namespace Beautryee
             int id = m.WParam.ToInt32();
             switch (id)
             {
-                case (int)Direction.UP:     HotKey_Up(); break;
+                case (int)Direction.UP:     HotKey_Up();    break;
                 case (int)Direction.RIGHT:  HotKey_Right(); break;
-                case (int)Direction.DOWN:   HotKey_Down(); break;
-                case (int)Direction.LEFT:   HotKey_Left(); break;
+                case (int)Direction.DOWN:   HotKey_Down();  break;
+                case (int)Direction.LEFT:   HotKey_Left();  break;
+                case 101:   SpeedUp();      break;
+                case 102:   SpeedDown();    break;
             }
         }
         //监视Windows消息
@@ -256,18 +331,30 @@ namespace Beautryee
         // 等级加
         private void Link_LevelUp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            SpeedUp();
+        }
+        // 速度加
+        private void SpeedUp()
+        {
             if (Level < 10)
                 Level++;
 
             Label_Level.Text = Level.ToString();
+            Interval = 200 * Math.Pow(0.9, (double)Level - 1);
         }
         // 等级减
         private void Link_LevelDown_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            SpeedDown();
+        }
+        // 速度减
+        private void SpeedDown()
         {
             if (Level > 1)
                 Level--;
 
             Label_Level.Text = Level.ToString();
+            Interval = 200 * Math.Pow(0.9, (double)Level - 1);
         }
     }
 }
