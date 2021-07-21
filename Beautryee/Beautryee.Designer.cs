@@ -291,8 +291,7 @@ namespace Beautryee
             // 
             // Beautryee
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Menu;
             this.ClientSize = new System.Drawing.Size(564, 400);
             this.Controls.Add(this.Label_Pause);
@@ -315,12 +314,14 @@ namespace Beautryee
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Button_Start);
             this.Controls.Add(this.Label_Score);
+            this.Font = new System.Drawing.Font("宋体", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Beautryee";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "贪吃蛇";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Beautryee_FormClosing);
             this.Load += new System.EventHandler(this.Beautryee_Load);

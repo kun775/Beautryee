@@ -74,13 +74,17 @@ namespace Beautryee
             GameStart();
             Button_Start.Enabled = false;
         }
-        // 新游戏
-        private void GameStart()
+        // 清理地图
+        private void ClearMap()
         {
             for (int x = 0; x < Col; x++)
                 for (int y = 0; y < Row; y++)
                     MapItems[x, y].BackColor = MapColor;
-
+        }
+        // 新游戏
+        private void GameStart()
+        {
+            ClearMap();
             IsGameOver = false;
             Score = 0;
             CheckBox2_Edit.Enabled = false;
@@ -154,7 +158,7 @@ namespace Beautryee
                 }
             }
         }
-
+        // 添加障碍物
         private void Item_Click(object sender, EventArgs e)
         {
             if (CheckBox2_Edit.Checked)
@@ -170,7 +174,6 @@ namespace Beautryee
                     MapItems[x, y].BackColor = ObstacleColor;
             }
         }
-
         // 生成蛇
         private void GenerateSnake()
         {
@@ -224,21 +227,13 @@ namespace Beautryee
                 {
                     StartPosition:
                     if (direction == Direction.RIGHT)
-                    {
                         SnakeHeader.Offset(1, 0);
-                    }
                     else if (direction == Direction.DOWN)
-                    {
                         SnakeHeader.Offset(0, 1);
-                    }
                     else if (direction == Direction.LEFT)
-                    {
                         SnakeHeader.Offset(-1, 0);
-                    }
                     else if (direction == Direction.UP)
-                    {
                         SnakeHeader.Offset(0, -1);
-                    }
                     if (SnakeBody.Contains(SnakeHeader))
                     {
                         IsGameOver = true;
@@ -277,7 +272,6 @@ namespace Beautryee
             }
             GameOver();
         }
-        
         // 打印点阵颜色
         private void Print(int[] Points, Color color)
         {
@@ -389,12 +383,12 @@ namespace Beautryee
             Label_Level.Text = Level.ToString();
             Interval = 200 * Math.Pow(0.9, (double)Level - 1);
         }
-        
         // 进入编辑模式
         private void CheckBox2_Edit_CheckedChanged(object sender, EventArgs e)
         {
             if (CheckBox2_Edit.Checked)
             {
+                ClearMap();
                 Button_Start.Enabled = false;
                 Button_Save.Visible = true;
             }    
