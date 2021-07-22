@@ -28,13 +28,15 @@ namespace Beautryee
         private Random ran;                 // 随机生成苹果
         private Point Apple = new Point(0, 0);  // 苹果位置
         private Point SnakeHeader;          // 蛇头位置
+        private Point SnakeTail;
         private int SnakeLenth = 3;         // 蛇身长度
         private int Score = 0;              // 分数
         private int Level = 1;              // 等级
         private bool IsGameOver = true;     // 游戏是否结束
         private bool IsRelease = false;     // 上一个按键是否已经执行
         private bool IsApplePlus = false;   // 苹果超大杯
-        private bool IsPause = false;        // 是否暂停游戏
+        private bool IsPause = false;       // 是否暂停游戏
+        private bool IsAutoEat = false;     // 自动吃苹果
         private readonly Color MapColor = SystemColors.Info;    // 地图颜色
         private readonly Color SnakeColor = Color.SaddleBrown;  // 蛇颜色
         private readonly Color ObstacleColor = Color.Black;     // 障碍物颜色
@@ -60,6 +62,7 @@ namespace Beautryee
         {
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
+            Label_Pause.BackColor = MapColor;
         }
 
         private void Beautryee_Load(object sender, EventArgs e)
@@ -87,13 +90,15 @@ namespace Beautryee
             ClearMap();
             IsGameOver = false;
             Score = 0;
-            CheckBox2_Edit.Enabled = false;
+            CheckBox_Edit.Enabled = false;
             
             SnakeLenth = 3;
             direction = Direction.RIGHT;
 
             Label_Score.Text = $"{Score}";
-            if (checkBox1.Checked)
+            IsAutoEat = CheckBox_AutoEat.Checked;
+
+            if (CheckBox_Obstacle.Checked)
                 GenerateObstacle();
             GenerateSnake();
             GenerateApple();
@@ -111,7 +116,7 @@ namespace Beautryee
         private void GameOver()
         {
             Button_Start.Enabled = true;
-            CheckBox2_Edit.Enabled = true;
+            CheckBox_Edit.Enabled = true;
             Print(GameOverPoint, GameOverColor);
         }
         // 注册快捷键
@@ -161,7 +166,7 @@ namespace Beautryee
         // 添加障碍物
         private void Item_Click(object sender, EventArgs e)
         {
-            if (CheckBox2_Edit.Checked)
+            if (CheckBox_Edit.Checked)
             {
                 Panel panel = (Panel)sender;
                 string name = panel.Name.Replace("Box", "");
@@ -185,12 +190,22 @@ namespace Beautryee
             }
 
             SnakeHeader = new Point(SnakeLenth-1, 0);
+            SnakeTail = new Point(0, 0);
         }
         // 生成苹果
         private void GenerateApple()
         {
+            int times = 0;
             while (true)
             {
+                times++;
+                Label_Value.Text = times.ToString();
+                if (times >= 1000)
+                {
+                    MessageBox.Show("估计是没地方生成苹果了");
+                    IsGameOver = true;
+                    return;
+                }
                 int x = ran.Next(0, Col);
                 int y = ran.Next(0, Row);
                 if (MapItems[x, y].BackColor == ObstacleColor)
@@ -214,18 +229,146 @@ namespace Beautryee
                 }
             }
         }
+        private bool IsValid(Point a)
+        {
+            if (a.X > Col - 1 || a.Y > Row - 1 || a.X < 0 || a.Y < 0)
+                return false;
+            if (MapItems[a.X, a.Y].BackColor == ObstacleColor)
+                return false;
+            return true;
+        }
+        // 获取两点间的值
+        private int GetPoineValue(Point a, Point b)
+        {
+            return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+        }
+        // 自动算法
+        private void AutoEat()
+        {
+            int value = GetPoineValue(Apple, SnakeHeader);
+            Point temp = SnakeHeader;
+                
+            if (direction == Direction.RIGHT)
+            {
+                temp.Offset(1, 0);
+                if (IsValid(temp) && value >= GetPoineValue(Apple, temp))
+                {
+                    return;
+                }
+                temp.Offset(-1, -1);
+                if (IsValid(temp) && value >= GetPoineValue(Apple, temp))
+                {
+                    direction = Direction.UP;
+                    return;
+                }
+                temp.Offset(0, 2);
+                if (IsValid(temp))
+                {
+                    direction = Direction.DOWN;
+                    return;
+                }
+                temp.Offset(0, -2);
+                if (IsValid(temp))
+                {
+                    direction = Direction.UP;
+                    return;
+                }
+            }
+            else if (direction == Direction.DOWN)
+            {
+                temp.Offset(0, 1);
+                if (IsValid(temp) && value >= GetPoineValue(Apple, temp))
+                {
+                    return;
+                }
+                temp.Offset(-1, -1);
+                if (IsValid(temp) && value >= GetPoineValue(Apple, temp))
+                {
+                    direction = Direction.LEFT;
+                    return;
+                }
+                temp.Offset(2, 0);
+                if (IsValid(temp))
+                { 
+                    direction = Direction.RIGHT;
+                    return;
+                }
+                temp.Offset(-2, 0);
+                if (IsValid(temp))
+                {
+                    direction = Direction.LEFT;
+                    return;
+                }
+            }
+            else if (direction == Direction.LEFT)
+            {
+                temp.Offset(-1, 0);
+                if (IsValid(temp) && value >= GetPoineValue(Apple, temp))
+                {
+                    return;
+                }
+                temp.Offset(1, -1);
+                if (IsValid(temp) && value >= GetPoineValue(Apple, temp))
+                {
+                    direction = Direction.UP;
+                    return;
+                }
+                temp.Offset(0, 2);
+                if (IsValid(temp))
+                { 
+                    direction = Direction.DOWN;
+                    return;
+                }
+                temp.Offset(0, -2);
+                if (IsValid(temp))
+                {
+                    direction = Direction.UP;
+                    return;
+                }
+            }
+            else//direction == Direction.UP)
+            {
+                temp.Offset(0, -1);
+                if (IsValid(temp) && value >= GetPoineValue(Apple, temp))
+                {
+                    direction = Direction.UP;
+                    return;
+                }
+                temp.Offset(-1, 1);
+                if (IsValid(temp) && value >= GetPoineValue(Apple, temp))
+                {
+                    direction = Direction.LEFT;
+                    return;
+                }
+                temp.Offset(2, 0);
+                if (IsValid(temp))
+                {
+                    direction = Direction.RIGHT;
+                    return;
+                }
+                temp.Offset(-2, 0);
+                if (IsValid(temp))
+                {
+                    direction = Direction.LEFT;
+                    return;
+                }
+            }
+        }
         // 移动
         private void Running()
         {
             while (!IsGameOver)
             {
                 Thread.Sleep((int)Interval);
+                
+                StartPosition:
+                if (IsAutoEat)
+                    AutoEat();
                 if (IsPause)
                     continue;
                 IsRelease = true;
                 try
                 {
-                    StartPosition:
                     if (direction == Direction.RIGHT)
                         SnakeHeader.Offset(1, 0);
                     else if (direction == Direction.DOWN)
@@ -234,13 +377,14 @@ namespace Beautryee
                         SnakeHeader.Offset(-1, 0);
                     else if (direction == Direction.UP)
                         SnakeHeader.Offset(0, -1);
-                    if (SnakeBody.Contains(SnakeHeader))
-                    {
-                        IsGameOver = true;
-                        break;
-                    }
+                    //if (SnakeBody.Contains(SnakeHeader))
+                    //{
+                    //    IsGameOver = true;
+                    //    break;
+                    //}
                     if (MapItems[SnakeHeader.X, SnakeHeader.Y].BackColor == ObstacleColor)
                     {
+
                         IsGameOver = true;
                         break;
                     }
@@ -261,7 +405,12 @@ namespace Beautryee
                     {
                         SnakeBody.Enqueue(SnakeHeader);
                         Point item = SnakeBody.Dequeue();
-                        MapItems[item.X, item.Y].BackColor = MapColor;
+                        if (item == SnakeTail)
+                        {
+                            if (!SnakeBody.Contains(item))
+                                MapItems[item.X, item.Y].BackColor = MapColor;
+                            SnakeTail = SnakeBody.Peek();
+                        }
                     }
                 }
                 catch (IndexOutOfRangeException)
@@ -329,6 +478,8 @@ namespace Beautryee
         private void ProcessHotkey(Message m)
         {
             int id = m.WParam.ToInt32();
+            if (IsAutoEat && id < 101 )
+                return;
             switch (id)
             {
                 case (int)Direction.UP:     HotKey_Up();    break;
@@ -363,7 +514,7 @@ namespace Beautryee
         // 速度加
         private void SpeedUp()
         {
-            if (Level < 10)
+            if (Level < 20)
                 Level++;
 
             Label_Level.Text = Level.ToString();
@@ -386,7 +537,7 @@ namespace Beautryee
         // 进入编辑模式
         private void CheckBox2_Edit_CheckedChanged(object sender, EventArgs e)
         {
-            if (CheckBox2_Edit.Checked)
+            if (CheckBox_Edit.Checked)
             {
                 ClearMap();
                 Button_Start.Enabled = false;
@@ -401,9 +552,9 @@ namespace Beautryee
         // 保存障碍物
         private void Button_Save_Click(object sender, EventArgs e)
         {
-            CheckBox2_Edit.Checked = false;
+            CheckBox_Edit.Checked = false;
             Button_Save.Visible = false;
-            checkBox1.Checked = true;
+            CheckBox_Obstacle.Checked = true;
             List<int> items = new List<int> { };
             foreach (var item in MapItems)
             {
@@ -418,6 +569,11 @@ namespace Beautryee
             }
             ObstaclePoint = items.ToArray();
             MessageBox.Show("保存成功");
+        }
+        // 自动
+        private void CheckBox_AutoEat_CheckedChanged(object sender, EventArgs e)
+        {
+            IsAutoEat = CheckBox_AutoEat.Checked;
         }
     }
 }

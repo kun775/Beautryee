@@ -46,10 +46,12 @@ namespace Beautryee
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.CheckBox2_Edit = new System.Windows.Forms.CheckBox();
+            this.CheckBox_Obstacle = new System.Windows.Forms.CheckBox();
+            this.CheckBox_Edit = new System.Windows.Forms.CheckBox();
             this.Button_Save = new System.Windows.Forms.Button();
             this.Label_Pause = new System.Windows.Forms.Label();
+            this.CheckBox_AutoEat = new System.Windows.Forms.CheckBox();
+            this.Label_Value = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Label_Score
@@ -67,7 +69,7 @@ namespace Beautryee
             // 
             // Button_Start
             // 
-            this.Button_Start.Location = new System.Drawing.Point(451, 343);
+            this.Button_Start.Location = new System.Drawing.Point(451, 347);
             this.Button_Start.Name = "Button_Start";
             this.Button_Start.Size = new System.Drawing.Size(75, 23);
             this.Button_Start.TabIndex = 1;
@@ -153,12 +155,12 @@ namespace Beautryee
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("宋体", 12F);
+            this.label3.Font = new System.Drawing.Font("宋体", 9F);
             this.label3.ForeColor = System.Drawing.Color.Black;
             this.label3.Location = new System.Drawing.Point(441, 153);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 16);
+            this.label3.Size = new System.Drawing.Size(41, 12);
             this.label3.TabIndex = 8;
             this.label3.Text = "障碍物";
             // 
@@ -166,12 +168,12 @@ namespace Beautryee
             // 
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("宋体", 12F);
+            this.label4.Font = new System.Drawing.Font("宋体", 9F);
             this.label4.ForeColor = System.Drawing.Color.Black;
             this.label4.Location = new System.Drawing.Point(441, 186);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(104, 16);
+            this.label4.Size = new System.Drawing.Size(77, 12);
             this.label4.TabIndex = 10;
             this.label4.Text = "普通苹果 1分";
             // 
@@ -187,12 +189,12 @@ namespace Beautryee
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Font = new System.Drawing.Font("宋体", 12F);
+            this.label5.Font = new System.Drawing.Font("宋体", 9F);
             this.label5.ForeColor = System.Drawing.Color.Black;
             this.label5.Location = new System.Drawing.Point(441, 219);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(112, 16);
+            this.label5.Size = new System.Drawing.Size(83, 12);
             this.label5.TabIndex = 12;
             this.label5.Text = "特殊苹果 10分";
             // 
@@ -221,12 +223,12 @@ namespace Beautryee
             // 
             this.label7.AutoSize = true;
             this.label7.BackColor = System.Drawing.Color.Transparent;
-            this.label7.Font = new System.Drawing.Font("宋体", 12F);
+            this.label7.Font = new System.Drawing.Font("宋体", 9F);
             this.label7.ForeColor = System.Drawing.Color.Black;
             this.label7.Location = new System.Drawing.Point(415, 93);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(136, 16);
+            this.label7.Size = new System.Drawing.Size(101, 12);
             this.label7.TabIndex = 14;
             this.label7.Text = "PageUp:   速度加";
             // 
@@ -234,39 +236,39 @@ namespace Beautryee
             // 
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Font = new System.Drawing.Font("宋体", 12F);
+            this.label8.Font = new System.Drawing.Font("宋体", 9F);
             this.label8.ForeColor = System.Drawing.Color.Black;
             this.label8.Location = new System.Drawing.Point(415, 122);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(136, 16);
+            this.label8.Size = new System.Drawing.Size(101, 12);
             this.label8.TabIndex = 15;
             this.label8.Text = "PageDown: 速度减";
             // 
-            // checkBox1
+            // CheckBox_Obstacle
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(415, 260);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(84, 16);
-            this.checkBox1.TabIndex = 16;
-            this.checkBox1.Text = "加入障碍物";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.CheckBox_Obstacle.AutoSize = true;
+            this.CheckBox_Obstacle.Location = new System.Drawing.Point(415, 250);
+            this.CheckBox_Obstacle.Name = "CheckBox_Obstacle";
+            this.CheckBox_Obstacle.Size = new System.Drawing.Size(84, 16);
+            this.CheckBox_Obstacle.TabIndex = 16;
+            this.CheckBox_Obstacle.Text = "加入障碍物";
+            this.CheckBox_Obstacle.UseVisualStyleBackColor = true;
             // 
-            // CheckBox2_Edit
+            // CheckBox_Edit
             // 
-            this.CheckBox2_Edit.AutoSize = true;
-            this.CheckBox2_Edit.Location = new System.Drawing.Point(415, 282);
-            this.CheckBox2_Edit.Name = "CheckBox2_Edit";
-            this.CheckBox2_Edit.Size = new System.Drawing.Size(84, 16);
-            this.CheckBox2_Edit.TabIndex = 17;
-            this.CheckBox2_Edit.Text = "编辑障碍物";
-            this.CheckBox2_Edit.UseVisualStyleBackColor = true;
-            this.CheckBox2_Edit.CheckedChanged += new System.EventHandler(this.CheckBox2_Edit_CheckedChanged);
+            this.CheckBox_Edit.AutoSize = true;
+            this.CheckBox_Edit.Location = new System.Drawing.Point(415, 272);
+            this.CheckBox_Edit.Name = "CheckBox_Edit";
+            this.CheckBox_Edit.Size = new System.Drawing.Size(84, 16);
+            this.CheckBox_Edit.TabIndex = 17;
+            this.CheckBox_Edit.Text = "编辑障碍物";
+            this.CheckBox_Edit.UseVisualStyleBackColor = true;
+            this.CheckBox_Edit.CheckedChanged += new System.EventHandler(this.CheckBox2_Edit_CheckedChanged);
             // 
             // Button_Save
             // 
-            this.Button_Save.Location = new System.Drawing.Point(504, 279);
+            this.Button_Save.Location = new System.Drawing.Point(504, 267);
             this.Button_Save.Name = "Button_Save";
             this.Button_Save.Size = new System.Drawing.Size(47, 23);
             this.Button_Save.TabIndex = 18;
@@ -278,26 +280,52 @@ namespace Beautryee
             // Label_Pause
             // 
             this.Label_Pause.AutoSize = true;
-            this.Label_Pause.BackColor = System.Drawing.Color.Transparent;
-            this.Label_Pause.Font = new System.Drawing.Font("宋体", 12F);
+            this.Label_Pause.BackColor = System.Drawing.SystemColors.Menu;
+            this.Label_Pause.Font = new System.Drawing.Font("宋体", 20F);
             this.Label_Pause.ForeColor = System.Drawing.Color.Red;
-            this.Label_Pause.Location = new System.Drawing.Point(452, 319);
+            this.Label_Pause.Location = new System.Drawing.Point(143, 184);
             this.Label_Pause.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Label_Pause.Name = "Label_Pause";
-            this.Label_Pause.Size = new System.Drawing.Size(72, 16);
+            this.Label_Pause.Size = new System.Drawing.Size(147, 27);
             this.Label_Pause.TabIndex = 19;
-            this.Label_Pause.Text = "游戏暂停";
+            this.Label_Pause.Text = "游戏暂停！";
             this.Label_Pause.Visible = false;
+            // 
+            // CheckBox_AutoEat
+            // 
+            this.CheckBox_AutoEat.AutoSize = true;
+            this.CheckBox_AutoEat.Location = new System.Drawing.Point(415, 294);
+            this.CheckBox_AutoEat.Name = "CheckBox_AutoEat";
+            this.CheckBox_AutoEat.Size = new System.Drawing.Size(84, 16);
+            this.CheckBox_AutoEat.TabIndex = 20;
+            this.CheckBox_AutoEat.Text = "自动吃苹果";
+            this.CheckBox_AutoEat.UseVisualStyleBackColor = true;
+            this.CheckBox_AutoEat.CheckedChanged += new System.EventHandler(this.CheckBox_AutoEat_CheckedChanged);
+            // 
+            // Label_Value
+            // 
+            this.Label_Value.AutoSize = true;
+            this.Label_Value.BackColor = System.Drawing.Color.Transparent;
+            this.Label_Value.Font = new System.Drawing.Font("宋体", 9F);
+            this.Label_Value.ForeColor = System.Drawing.Color.Black;
+            this.Label_Value.Location = new System.Drawing.Point(504, 296);
+            this.Label_Value.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Label_Value.Name = "Label_Value";
+            this.Label_Value.Size = new System.Drawing.Size(11, 12);
+            this.Label_Value.TabIndex = 21;
+            this.Label_Value.Text = "0";
             // 
             // Beautryee
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Menu;
             this.ClientSize = new System.Drawing.Size(564, 400);
+            this.Controls.Add(this.Label_Value);
+            this.Controls.Add(this.CheckBox_AutoEat);
             this.Controls.Add(this.Label_Pause);
             this.Controls.Add(this.Button_Save);
-            this.Controls.Add(this.CheckBox2_Edit);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.CheckBox_Edit);
+            this.Controls.Add(this.CheckBox_Obstacle);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -317,7 +345,7 @@ namespace Beautryee
             this.Font = new System.Drawing.Font("宋体", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Beautryee";
@@ -348,10 +376,12 @@ namespace Beautryee
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox CheckBox2_Edit;
+        private System.Windows.Forms.CheckBox CheckBox_Obstacle;
+        private System.Windows.Forms.CheckBox CheckBox_Edit;
         private System.Windows.Forms.Button Button_Save;
         private System.Windows.Forms.Label Label_Pause;
+        private System.Windows.Forms.CheckBox CheckBox_AutoEat;
+        private System.Windows.Forms.Label Label_Value;
     }
 }
 
