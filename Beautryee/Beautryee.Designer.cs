@@ -31,18 +31,17 @@ namespace Beautryee
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Beautryee));
             this.Label_Score = new System.Windows.Forms.Label();
-            this.Button_Start = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.Link_LevelDown = new System.Windows.Forms.LinkLabel();
             this.Link_LevelUp = new System.Windows.Forms.LinkLabel();
             this.Label_Level = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1 = new UIPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel2 = new UIPanel();
             this.label5 = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel3 = new UIPanel();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -51,7 +50,7 @@ namespace Beautryee
             this.Button_Save = new System.Windows.Forms.Button();
             this.Label_Pause = new System.Windows.Forms.Label();
             this.CheckBox_AutoEat = new System.Windows.Forms.CheckBox();
-            this.Label_Value = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Label_Score
@@ -66,16 +65,6 @@ namespace Beautryee
             this.Label_Score.Size = new System.Drawing.Size(16, 16);
             this.Label_Score.TabIndex = 0;
             this.Label_Score.Text = "0";
-            // 
-            // Button_Start
-            // 
-            this.Button_Start.Location = new System.Drawing.Point(451, 347);
-            this.Button_Start.Name = "Button_Start";
-            this.Button_Start.Size = new System.Drawing.Size(75, 23);
-            this.Button_Start.TabIndex = 1;
-            this.Button_Start.Text = "开始游戏";
-            this.Button_Start.UseVisualStyleBackColor = true;
-            this.Button_Start.Click += new System.EventHandler(this.Button_Start_Click);
             // 
             // label1
             // 
@@ -140,14 +129,19 @@ namespace Beautryee
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(71, 12);
             this.label2.TabIndex = 6;
-            this.label2.Text = "Version 1.1";
+            this.label2.Text = "Version 1.3";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.FillColor = System.Drawing.Color.Black;
             this.panel1.Location = new System.Drawing.Point(415, 151);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panel1.MinimumSize = new System.Drawing.Size(1, 1);
             this.panel1.Name = "panel1";
+            this.panel1.Radius = 20;
+            this.panel1.RectColor = System.Drawing.Color.Transparent;
             this.panel1.Size = new System.Drawing.Size(20, 20);
             this.panel1.TabIndex = 7;
             // 
@@ -179,9 +173,14 @@ namespace Beautryee
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.Green;
+            this.panel2.BackColor = System.Drawing.Color.Transparent;
+            this.panel2.FillColor = System.Drawing.Color.Green;
             this.panel2.Location = new System.Drawing.Point(415, 184);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panel2.MinimumSize = new System.Drawing.Size(1, 1);
             this.panel2.Name = "panel2";
+            this.panel2.Radius = 20;
+            this.panel2.RectColor = System.Drawing.Color.Transparent;
             this.panel2.Size = new System.Drawing.Size(20, 20);
             this.panel2.TabIndex = 9;
             // 
@@ -197,14 +196,21 @@ namespace Beautryee
             this.label5.Size = new System.Drawing.Size(83, 12);
             this.label5.TabIndex = 12;
             this.label5.Text = "特殊苹果 10分";
+            this.label5.Visible = false;
             // 
             // panel3
             // 
-            this.panel3.BackColor = System.Drawing.Color.Red;
+            this.panel3.BackColor = System.Drawing.Color.Transparent;
+            this.panel3.FillColor = System.Drawing.Color.Red;
             this.panel3.Location = new System.Drawing.Point(415, 217);
+            this.panel3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panel3.MinimumSize = new System.Drawing.Size(1, 1);
             this.panel3.Name = "panel3";
+            this.panel3.Radius = 20;
+            this.panel3.RectColor = System.Drawing.Color.Transparent;
             this.panel3.Size = new System.Drawing.Size(20, 20);
             this.panel3.TabIndex = 11;
+            this.panel3.Visible = false;
             // 
             // label6
             // 
@@ -254,6 +260,7 @@ namespace Beautryee
             this.CheckBox_Obstacle.TabIndex = 16;
             this.CheckBox_Obstacle.Text = "加入障碍物";
             this.CheckBox_Obstacle.UseVisualStyleBackColor = true;
+            this.CheckBox_Obstacle.Visible = false;
             // 
             // CheckBox_Edit
             // 
@@ -264,6 +271,7 @@ namespace Beautryee
             this.CheckBox_Edit.TabIndex = 17;
             this.CheckBox_Edit.Text = "编辑障碍物";
             this.CheckBox_Edit.UseVisualStyleBackColor = true;
+            this.CheckBox_Edit.Visible = false;
             this.CheckBox_Edit.CheckedChanged += new System.EventHandler(this.CheckBox2_Edit_CheckedChanged);
             // 
             // Button_Save
@@ -300,27 +308,28 @@ namespace Beautryee
             this.CheckBox_AutoEat.TabIndex = 20;
             this.CheckBox_AutoEat.Text = "自动吃苹果";
             this.CheckBox_AutoEat.UseVisualStyleBackColor = true;
+            this.CheckBox_AutoEat.Visible = false;
             this.CheckBox_AutoEat.CheckedChanged += new System.EventHandler(this.CheckBox_AutoEat_CheckedChanged);
             // 
-            // Label_Value
+            // label9
             // 
-            this.Label_Value.AutoSize = true;
-            this.Label_Value.BackColor = System.Drawing.Color.Transparent;
-            this.Label_Value.Font = new System.Drawing.Font("宋体", 9F);
-            this.Label_Value.ForeColor = System.Drawing.Color.Black;
-            this.Label_Value.Location = new System.Drawing.Point(504, 296);
-            this.Label_Value.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Label_Value.Name = "Label_Value";
-            this.Label_Value.Size = new System.Drawing.Size(11, 12);
-            this.Label_Value.TabIndex = 21;
-            this.Label_Value.Text = "0";
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold);
+            this.label9.ForeColor = System.Drawing.Color.Black;
+            this.label9.Location = new System.Drawing.Point(405, 343);
+            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(150, 14);
+            this.label9.TabIndex = 22;
+            this.label9.Text = "空格键开始/暂停游戏";
             // 
             // Beautryee
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Menu;
             this.ClientSize = new System.Drawing.Size(564, 400);
-            this.Controls.Add(this.Label_Value);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.CheckBox_AutoEat);
             this.Controls.Add(this.Label_Pause);
             this.Controls.Add(this.Button_Save);
@@ -340,7 +349,6 @@ namespace Beautryee
             this.Controls.Add(this.Link_LevelUp);
             this.Controls.Add(this.Link_LevelDown);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.Button_Start);
             this.Controls.Add(this.Label_Score);
             this.Font = new System.Drawing.Font("宋体", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -361,18 +369,17 @@ namespace Beautryee
         #endregion
 
         private System.Windows.Forms.Label Label_Score;
-        private System.Windows.Forms.Button Button_Start;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.LinkLabel Link_LevelDown;
         private System.Windows.Forms.LinkLabel Link_LevelUp;
         private System.Windows.Forms.Label Label_Level;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Panel panel1;
+        private UIPanel panel1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Panel panel2;
+        private UIPanel panel2;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Panel panel3;
+        private UIPanel panel3;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
@@ -381,7 +388,7 @@ namespace Beautryee
         private System.Windows.Forms.Button Button_Save;
         private System.Windows.Forms.Label Label_Pause;
         private System.Windows.Forms.CheckBox CheckBox_AutoEat;
-        private System.Windows.Forms.Label Label_Value;
+        private System.Windows.Forms.Label label9;
     }
 }
 

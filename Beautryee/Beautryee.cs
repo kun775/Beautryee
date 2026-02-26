@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Media;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -20,7 +21,7 @@ namespace Beautryee
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, Keys vk);
         [DllImport("user32.dll")] //申明API函数
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-        private Panel[,] MapItems;          // 地图集合
+        private UIPanel[,] MapItems;          // 地图集合
         private readonly int Row = 20;      // 格子行数
         private readonly int Col = 20;      // 格子列数
         private readonly int ItemSize = 20; // 格子边长
@@ -38,7 +39,8 @@ namespace Beautryee
         private bool IsPause = false;       // 是否暂停游戏
         private bool IsAutoEat = false;     // 自动吃苹果
         private readonly Color MapColor = SystemColors.Info;    // 地图颜色
-        private readonly Color SnakeColor = Color.SaddleBrown;  // 蛇颜色
+        //private readonly Color SnakeColor = Color.SaddleBrown;  // 蛇颜色
+        private readonly Color HeaderColor = Color.Red;         // 蛇头颜色
         private readonly Color ObstacleColor = Color.Black;     // 障碍物颜色
         private readonly Color GameOverColor = Color.DimGray;   // 游戏结束颜色
         private Direction direction = Direction.RIGHT;          // 移动方向
@@ -57,12 +59,18 @@ namespace Beautryee
             2,2,3,3,4,4,5,5,14,5,15,4,16,3,17,2,8,8,9,9,10,10,11,
             11,14,14,15,15,16,16,17,17,2,17,3,16,4,15,5,14,8,11,9,10,10,9,11,8
         };
+        private readonly SoundPlayer OverPlayer = new SoundPlayer(@"over.wav");
+        private readonly SoundPlayer Eatlayer = new SoundPlayer(@"eat.wav");
 
         public Beautryee()
         {
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
             Label_Pause.BackColor = MapColor;
+
+            SetStyle(ControlStyles.OptimizedDoubleBuffer |
+                    ControlStyles.ResizeRedraw |
+                    ControlStyles.AllPaintingInWmPaint, true);
         }
 
         private void Beautryee_Load(object sender, EventArgs e)
@@ -71,22 +79,17 @@ namespace Beautryee
             ran = new Random((int)DateTime.Now.Ticks);
             GenerateMap();
         }
-        // 开始游戏
-        private void Button_Start_Click(object sender, EventArgs e)
-        {
-            GameStart();
-            Button_Start.Enabled = false;
-        }
         // 清理地图
         private void ClearMap()
         {
             for (int x = 0; x < Col; x++)
                 for (int y = 0; y < Row; y++)
-                    MapItems[x, y].BackColor = MapColor;
+                    MapItems[x, y].FillColor = MapColor;
         }
         // 新游戏
         private void GameStart()
         {
+            OverPlayer.Stop();
             ClearMap();
             IsGameOver = false;
             Score = 0;
@@ -108,14 +111,19 @@ namespace Beautryee
         private void GamePause()
         {
             if (IsGameOver)
-                return;
-            IsPause = !IsPause;
-            Label_Pause.Visible = IsPause;
+            {
+                GameStart();
+            }
+            else
+            {
+                IsPause = !IsPause;
+                Label_Pause.Visible = IsPause;
+            }
         }
         // 游戏结束
         private void GameOver()
         {
-            Button_Start.Enabled = true;
+            OverPlayer.Play();
             CheckBox_Edit.Enabled = true;
             Print(GameOverPoint, GameOverColor);
         }
@@ -145,17 +153,20 @@ namespace Beautryee
         // 生成地图
         private void GenerateMap()
         {
-            MapItems = new Panel[Col, Row];
+            MapItems = new UIPanel[Col, Row];
             for (int x = 0; x < Col; x++)
             {
                 for (int y = 0; y < Row; y++)
                 {
-                    Panel item = new Panel
+                    UIPanel item = new UIPanel
                     {
                         Name = $"Box{x}_{y}",
                         Size = new Size(ItemSize, ItemSize),
                         Location = new Point(x * ItemSize, y * ItemSize),
                         BackColor = MapColor,
+                        FillColor = MapColor,
+                        RectColor = MapColor,
+                        Radius = ItemSize,
                     };
                     item.Click += Item_Click;
                     MapItems[x,y] = item;
@@ -168,15 +179,15 @@ namespace Beautryee
         {
             if (CheckBox_Edit.Checked)
             {
-                Panel panel = (Panel)sender;
+                UIPanel panel = (UIPanel)sender;
                 string name = panel.Name.Replace("Box", "");
                 int x = int.Parse(name.Split('_')[0]);
                 int y = int.Parse(name.Split('_')[1]);
 
-                if (MapItems[x, y].BackColor == ObstacleColor)
-                    MapItems[x, y].BackColor = MapColor;
+                if (MapItems[x, y].FillColor == ObstacleColor)
+                    MapItems[x, y].FillColor = MapColor;
                 else
-                    MapItems[x, y].BackColor = ObstacleColor;
+                    MapItems[x, y].FillColor = ObstacleColor;
             }
         }
         // 生成蛇
@@ -186,10 +197,11 @@ namespace Beautryee
             for (int i = 0; i < SnakeLenth; i++)
             {
                 SnakeBody.Enqueue(new Point(i, 0));
-                MapItems[i, 0].BackColor = SnakeColor;
+                MapItems[i, 0].FillColor = Color.FromArgb(ran.Next(0,255), ran.Next(0, 255), ran.Next(0, 255));
             }
-
+            
             SnakeHeader = new Point(SnakeLenth-1, 0);
+            MapItems[SnakeHeader.X, SnakeHeader.Y].FillColor = HeaderColor;
             SnakeTail = new Point(0, 0);
         }
         // 生成苹果
@@ -199,7 +211,6 @@ namespace Beautryee
             while (true)
             {
                 times++;
-                Label_Value.Text = times.ToString();
                 if (times >= 1000)
                 {
                     MessageBox.Show("估计是没地方生成苹果了");
@@ -208,32 +219,36 @@ namespace Beautryee
                 }
                 int x = ran.Next(0, Col);
                 int y = ran.Next(0, Row);
-                if (MapItems[x, y].BackColor == ObstacleColor)
+                if (MapItems[x, y].FillColor == ObstacleColor)
+                    continue;
+
+                if ((x == 0 && y == 0) || (x == Col-1 && y == Row-1) || (x == 0 && y == Row-1) || (x == Col-1 && y == 0))
                     continue;
 
                 Apple = new Point(x, y);
-                
+
                 if (!SnakeBody.Contains(Apple))
                 {
-                    if (ran.Next(0, 10) == 1)
+                    //if (ran.Next(0, 10) == 1)
+                    //{
+                    //    MapItems[x, y].FillColor = Color.Red;
+                    //    IsApplePlus = true;
+                    //}
+                    //else
                     {
-                        MapItems[x, y].BackColor = Color.Red;
-                        IsApplePlus = true;
-                    }
-                    else
-                    {
-                        MapItems[x, y].BackColor = Color.Green;
+                        MapItems[x, y].FillColor = Color.Green;
                         IsApplePlus = false;
                     }
                     break;
                 }
             }
         }
+        // 移动目的是否有效
         private bool IsValid(Point a)
         {
             if (a.X > Col - 1 || a.Y > Row - 1 || a.X < 0 || a.Y < 0)
                 return false;
-            if (MapItems[a.X, a.Y].BackColor == ObstacleColor)
+            if (MapItems[a.X, a.Y].FillColor == ObstacleColor)
                 return false;
             return true;
         }
@@ -359,14 +374,14 @@ namespace Beautryee
         {
             while (!IsGameOver)
             {
+            StartPosition:
                 Thread.Sleep((int)Interval);
-                
-                StartPosition:
                 if (IsAutoEat)
                     AutoEat();
                 if (IsPause)
                     continue;
                 IsRelease = true;
+                Point point = SnakeHeader;
                 try
                 {
                     if (direction == Direction.RIGHT)
@@ -377,20 +392,23 @@ namespace Beautryee
                         SnakeHeader.Offset(-1, 0);
                     else if (direction == Direction.UP)
                         SnakeHeader.Offset(0, -1);
-                    //if (SnakeBody.Contains(SnakeHeader))
-                    //{
-                    //    IsGameOver = true;
-                    //    break;
-                    //}
-                    if (MapItems[SnakeHeader.X, SnakeHeader.Y].BackColor == ObstacleColor)
-                    {
 
+                    if (!IsAutoEat && SnakeBody.Contains(SnakeHeader))
+                    {
                         IsGameOver = true;
                         break;
                     }
-                    MapItems[SnakeHeader.X, SnakeHeader.Y].BackColor = SnakeColor;
+
+                    if (MapItems[SnakeHeader.X, SnakeHeader.Y].FillColor == ObstacleColor)
+                    {
+                        IsGameOver = true;
+                        break;
+                    }
+                    MapItems[SnakeHeader.X, SnakeHeader.Y].FillColor = HeaderColor;
+                    MapItems[point.X, point.Y].FillColor = Color.FromArgb(ran.Next(0, 255), ran.Next(0, 255), ran.Next(0, 255));
                     if (SnakeHeader == Apple)
                     {
+                        Eatlayer.Play();
                         SnakeBody.Enqueue(SnakeHeader);
                         if (IsApplePlus)
                             Score += 10;
@@ -408,7 +426,7 @@ namespace Beautryee
                         if (item == SnakeTail)
                         {
                             if (!SnakeBody.Contains(item))
-                                MapItems[item.X, item.Y].BackColor = MapColor;
+                                MapItems[item.X, item.Y].FillColor = MapColor;
                             SnakeTail = SnakeBody.Peek();
                         }
                     }
@@ -434,7 +452,7 @@ namespace Beautryee
                     else
                     {
                         int y = item;
-                        MapItems[x, y].BackColor = color;
+                        MapItems[x, y].FillColor = color;
                     }
                     flag++;
                 }
@@ -540,12 +558,10 @@ namespace Beautryee
             if (CheckBox_Edit.Checked)
             {
                 ClearMap();
-                Button_Start.Enabled = false;
                 Button_Save.Visible = true;
             }    
             else
             {
-                Button_Start.Enabled = true;
                 Button_Save.Visible = false;
             }
         }
@@ -558,7 +574,7 @@ namespace Beautryee
             List<int> items = new List<int> { };
             foreach (var item in MapItems)
             {
-                if (item.BackColor == ObstacleColor)
+                if (item.FillColor == ObstacleColor)
                 {
                     string name = item.Name.Replace("Box", "");
                     int x = int.Parse(name.Split('_')[0]);

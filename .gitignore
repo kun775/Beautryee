@@ -361,3 +361,41 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# >>> codex-bootstrap-ignore >>>
+# Auto-generated baseline ignore rules.
+# Hidden files/directories
+.*
+!.gitignore
+!.gitattributes
+!.gitmodules
+
+# SVN/Visual Studio metadata
+.vs/
+.svn/
+
+# Visual Studio user files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+TestResults/
+
+# Package artifacts
+packages/
+*.nupkg
+
+# Temporary/log/cache
+*.log
+*.tmp
+*.cache
+# <<< codex-bootstrap-ignore <<<
